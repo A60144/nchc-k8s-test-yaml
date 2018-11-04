@@ -6,5 +6,5 @@ with tf.Session() as sess:
     a = tf.constant(10)
     b = tf.constant(32)
     sess.run(a+b)
-//    while True:
-//        time.sleep(5)
+#    while True:
+#        time.sleep(5)
