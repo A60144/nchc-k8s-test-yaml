@@ -1,0 +1,70 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  creationTimestamp: 2018-11-06T07:48:21Z
+  labels:
+    Run: "1"
+    job-uuid: 39c1276a-e198-11e8-97e7-525400c6f26a
+  name: 39c1276a-e198-11e8-97e7-525400c6f26a-step1-1
+  namespace: ent1070464wnfka
+  resourceVersion: "27796075"
+  selfLink: /apis/batch/v1/namespaces/ent1070464wnfka/jobs/39c1276a-e198-11e8-97e7-525400c6f26a-step1-1
+  uid: 553f0a31-e198-11e8-930b-a81e84cd2193
+spec:
+  backoffLimit: 0
+  completions: 1
+  parallelism: 1
+  selector:
+    matchLabels:
+      controller-uid: 553f0a31-e198-11e8-930b-a81e84cd2193
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        controller-uid: 553f0a31-e198-11e8-930b-a81e84cd2193
+        job-name: 39c1276a-e198-11e8-97e7-525400c6f26a-step1-1
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: availability_zone
+                operator: DoesNotExist
+      containers:
+      - command:
+        - sleep
+        - "99999"
+        image: registry.twcc.ai/ngc/nvidia/caffe
+        imagePullPolicy: Always
+        name: 39c1276a-e198-11e8-97e7-525400c6f26a
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512M
+            nvidia.com/gpu: "0"
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /mnt
+          name: 0job
+        - mountPath: /tmp
+          name: 1job
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext:
+        runAsUser: 11899
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: 0job
+        persistentVolumeClaim:
+          claimName: 39c1276a-e198-11e8-97e7-525400c6f26a-step1-1-0
+      - hostPath:
+          path: /fs01/u9833157
+          type: ""
+        name: 1job
+status:
+  active: 1
+  startTime: 2018-11-06T07:48:21Z
