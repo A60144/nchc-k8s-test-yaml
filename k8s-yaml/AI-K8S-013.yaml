@@ -1,0 +1,19 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: nginx-sts
+spec:
+  serviceName: "nginx"
+  replicas: 30
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: nginx-pod
+        image: registry.twcc.ai/public/nginx:latest
+        ports:
+        - containerPort: 80
+          name: web
