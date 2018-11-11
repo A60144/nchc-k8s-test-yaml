@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-pod
+spec:
+  containers:
+    - name: busybox-container
+      image: registry.twcc.ai/public/busybox:latest
+      command: [ "/bin/sh", "-c", "sleep 2147483647" ]
+      volumeMounts:
+      - name: gpfs
+        mountPath: "/data"
+  imagePullSecrets:
+    - name: registry.twcc.ai
+  volumes:
+    - name: gpfs
+      hostPath:
+        path: "/fs01"
