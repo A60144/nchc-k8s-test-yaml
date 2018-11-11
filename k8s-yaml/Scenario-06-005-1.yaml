@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns-a
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-curl-pod
+  namespace: ns-a
+  labels:
+    app: ubuntu-curl
+spec:
+  containers:
+    - name: ubuntu-curl-container
+      image: registry.twcc.ai/public/ubuntu-curl:14.04
+      command: [ "/bin/bash", "-c", "sleep 2147483647" ]
+  imagePullSecrets:
+    - name: registry.twcc.ai
+  nodeSelector:
+    role: multi-tenancy
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: ns-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-svc
+  template:
+    metadata:
+      labels:
+        app: nginx-svc
+    spec:
+      containers:
+      - name: nginx-svc
+        image: registry.twcc.ai/public/nginx:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+      nodeSelector:
+        role: multi-tenancy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+  namespace: ns-a
+  labels:
+    app: nginx-svc
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: nginx-svc
+  externalIPs:
+  - 172.29.188.50
+  type: LoadBalancer
